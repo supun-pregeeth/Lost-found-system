@@ -1,0 +1,48 @@
+lost-found-frontend
+│
+├── public
+│   └── index.html
+│
+├── src
+│   │
+│   ├── assets
+│   │   ├── images
+│   │   ├── icons
+│   │   └── styles
+│   │
+│   ├── components
+│   │   ├── Navbar.jsx
+│   │   ├── Footer.jsx
+│   │   ├── ItemCard.jsx
+│   │   ├── SearchBar.jsx
+│   │   └── Button.jsx
+│   │
+│   ├── pages
+│   │   ├── Home.jsx
+│   │   ├── LostItems.jsx
+│   │   ├── FoundItems.jsx
+│   │   ├── ReportItem.jsx
+│   │   ├── ItemDetails.jsx
+│   │   ├── Login.jsx
+│   │   └── Register.jsx
+│   │
+│   ├── services
+│   │   └── api.js
+│   │
+│   ├── context
+│   │   └── AuthContext.jsx
+│   │
+│   ├── hooks
+│   │   └── useAuth.js
+│   │
+│   ├── utils
+│   │   └── helpers.js
+│   │
+│   ├── routes
+│   │   └── AppRoutes.jsx
+│   │
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+│
+└── package.json
