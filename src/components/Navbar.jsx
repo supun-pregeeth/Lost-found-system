@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import './Navbar.css';
@@ -8,6 +8,22 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setDropdownOpen(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -45,15 +61,32 @@ export const Navbar = () => {
         {/* Auth */}
         <div className="navbar-auth">
           {user ? (
-            <div className="navbar-user">
-              <div className="navbar-user-avatar">{user.name?.[0]}</div>
-              <div className="navbar-dropdown">
-                <div className="navbar-dropdown-name">{user.name}</div>
-                <button className="navbar-dropdown-logout" onClick={() => { logout(); navigate('/'); }}>
-                  Sign out
-                </button>
-              </div>
-            </div>
+            <div className="navbar-user" ref={dropdownRef}>
+  
+  <div
+    className="navbar-user-avatar"
+    onClick={() => setDropdownOpen(!dropdownOpen)}
+  >
+    {user.name?.[0]}
+  </div>
+
+  {dropdownOpen && (
+    <div className="navbar-dropdown">
+      <div className="navbar-dropdown-name">{user.name}</div>
+
+      <button
+        className="navbar-dropdown-logout"
+        onClick={() => {
+          logout();
+          navigate('/');
+        }}
+      >
+        Sign out
+      </button>
+    </div>
+  )}
+
+</div>
           ) : (
             <div className="navbar-auth-links">
               <Link to="/login" className="navbar-auth-link">Sign in</Link>

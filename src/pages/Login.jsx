@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/Button';
 import { useAuth } from '../hooks/useAuth';
+import { loginUser } from "../api/authApi";
 import './Auth.css';
 
 export const Login = () => {
@@ -13,12 +14,40 @@ export const Login = () => {
 
   const handleSubmit = async () => {
     if (!form.email || !form.password) { setError('Please fill in all fields.'); return; }
+    
+    try {
+
     setLoading(true);
-    setError('');
-    await new Promise(r => setTimeout(r, 1200));
-    login({ name: 'Alex Johnson', email: form.email, id: 1 });
-    navigate('/');
+    setError("");
+
+    const response = await loginUser({
+      email: form.email,
+      password: form.password
+    });
+
+    const user = response.data;
+
+    // store JWT token
+    localStorage.setItem("token", user.token);
+
+    // update auth context
+    login(user);
+
+    // go to homepage
+    navigate("/");
+
+  } catch (err) {
+
+    setError(
+      err?.response?.data?.message ||
+      err?.message ||
+      "Login failed"
+    );
+
+  } finally {
     setLoading(false);
+  }
+  
   };
 
   return (
