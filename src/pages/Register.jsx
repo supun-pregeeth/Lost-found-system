@@ -2,25 +2,80 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/Button';
 import { useAuth } from '../hooks/useAuth';
+import { registerUser } from "../api/authApi";
 import './Auth.css';
 
+//Register function(component)
 export const Register = () => {
+
+  //Get the login function from the Auth system
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  //form state to hold the input values, loading state for the submit button, and error state for validation messages
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' });
+  
+  //used to show a loading spinner on the button.
   const [loading, setLoading] = useState(false);
+
+  //Stores validation errors.
   const [error, setError] = useState('');
 
-  const handleSubmit = async () => {
-    if (!form.name || !form.email || !form.password) { setError('Please fill in all required fields.'); return; }
-    if (form.password !== form.confirm) { setError('Passwords do not match.'); return; }
-    if (form.password.length < 8) { setError('Password must be at least 8 characters.'); return; }
+  const handleSubmit = async (e) => {
+
+  e?.preventDefault();
+
+  if (!form.name || !form.email || !form.password) {
+    setError("Please fill in all required fields.");
+    return;
+  }
+
+  if (form.password !== form.confirm) {
+    setError("Passwords do not match.");
+    return;
+  }
+
+  if (form.password.length < 8) {
+    setError("Password must be at least 8 characters.");
+    return;
+  }
+
+  if (!document.getElementById("terms").checked) {
+    setError("You must agree to the terms.");
+    return;
+  }
+
+  try {
+
     setLoading(true);
-    setError('');
-    await new Promise(r => setTimeout(r, 1400));
-    login({ name: form.name, email: form.email, id: Date.now() });
-    navigate('/');
-  };
+    setError("");
+
+    const response = await registerUser({
+      name: form.name,
+      email: form.email,
+      password: form.password
+    });
+
+    const user = response.data;
+
+    localStorage.setItem("token", user.token);
+
+    login(user);
+
+    navigate("/");
+
+  } catch (err) {
+
+    setError(
+      err?.response?.data?.message ||
+      err?.message ||
+      "Registration failed"
+    );
+
+  } finally {
+    setLoading(false);
+  }
+};
 
   const update = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
@@ -47,8 +102,8 @@ export const Register = () => {
 
           <div className="auth-form">
             <div className="form-group">
-              <label className="form-label">Full Name <span style={{ color: 'var(--lost)' }}>*</span></label>
-              <input className="form-input" placeholder="Full Name" value={form.name} onChange={e => update('name', e.target.value)} />
+              <label className="form-label">User Name <span style={{ color: 'var(--lost)' }}>*</span></label>
+              <input className="form-input" placeholder="User Name" value={form.name} onChange={e => update('name', e.target.value)} />
             </div>
 
             <div className="form-group">
