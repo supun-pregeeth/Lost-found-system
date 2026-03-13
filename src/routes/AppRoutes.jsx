@@ -6,6 +6,9 @@ import { ReportItem } from '../pages/ReportItem';
 import { ItemDetails } from '../pages/ItemDetails';
 import { Login } from '../pages/Login';
 import { Register } from '../pages/Register';
+import { Dashboard } from '../pages/Dashboard';
+
+
 
 export const AppRoutes = () => (
   <Routes>
@@ -16,5 +19,8 @@ export const AppRoutes = () => (
     <Route path="/items/:id" element={<ItemDetails />} />
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />
+    <Route path="/dashboard" element={<Dashboard />} />
+
+
   </Routes>
 );

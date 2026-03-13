@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/Button';
 import { CATEGORIES, LOCATIONS } from '../utils/helpers';
 import './ReportItem.css';
+import { createItem } from "../api/itemApi";
 
 export const ReportItem = () => {
   const navigate = useNavigate();
@@ -10,17 +11,42 @@ export const ReportItem = () => {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
-    title: '', category: '', location: '', date: '', description: '', reward: '', contact: '',
+    title: '', category: '', location: '', date: '', description: '', reward: '', contact: '', phone: ''
   });
 
   const update = (field, value) => setForm(f => ({ ...f, [field]: value }));
 
   const handleSubmit = async () => {
+    
+    try {
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1500));
+
+    const itemData = {
+      type: type.toUpperCase(),
+      title: form.title,
+      category: form.category,
+      description: form.description,
+      location: form.location,
+      address: form.address,
+      date: form.date,
+      reward: form.reward || 0,
+      email: form.contact,
+      phone: form.phone
+    };
+
+    const response = await createItem(itemData);
+
+    console.log("Item saved:", response.data);
+
+    navigate(type === "lost" ? "/lost" : "/found");
+
+  } catch (error) {
+    console.error("Error saving item:", error);
+  } finally {
     setLoading(false);
-    navigate(type === 'lost' ? '/lost' : '/found');
-  };
+  }
+  
+};
 
   return (
     <div className="page">
@@ -39,7 +65,7 @@ export const ReportItem = () => {
               className={`type-btn ${type === 'lost' ? 'type-btn-lost-active' : ''}`}
               onClick={() => setType('lost')}
             >
-              <span className="type-btn-icon">🔍</span>
+              <span className="type-btn-icon">{/* 🔍 */}</span>
               <div>
                 <strong>I Lost Something</strong>
                 <p>Report an item you've lost</p>
@@ -49,7 +75,7 @@ export const ReportItem = () => {
               className={`type-btn ${type === 'found' ? 'type-btn-found-active' : ''}`}
               onClick={() => setType('found')}
             >
-              <span className="type-btn-icon">✅</span>
+              <span className="type-btn-icon">{/* ✅ */}</span>
               <div>
                 <strong>I Found Something</strong>
                 <p>Report an item you've found</p>

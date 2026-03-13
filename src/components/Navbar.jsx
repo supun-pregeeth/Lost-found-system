@@ -74,11 +74,13 @@ export const Navbar = () => {
     <div className="navbar-dropdown">
       <div className="navbar-dropdown-name">{user.name}</div>
 
+      <button className="navbar-dropdown-name" onClick={() => navigate('/dashboard')}>Dashboard</button>
+
       <button
         className="navbar-dropdown-logout"
         onClick={() => {
           logout();
-          navigate('/');
+          navigate('/dashboard');
         }}
       >
         Sign out
