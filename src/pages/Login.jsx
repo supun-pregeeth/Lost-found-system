@@ -34,7 +34,7 @@ export const Login = () => {
     login(user);
 
     // go to homepage
-    navigate("/");
+    navigate("/dashboard");
 
   } catch (err) {
 

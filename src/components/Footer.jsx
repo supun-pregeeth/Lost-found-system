@@ -1,7 +1,9 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import './Footer.css';
 
 export const Footer = () => {
+  const navigate = useNavigate();
+
   return (
     <footer className="footer">
       <div className="container footer-inner">
@@ -24,7 +26,22 @@ export const Footer = () => {
             <h4>Platform</h4>
             <Link to="/lost">Lost Items</Link>
             <Link to="/found">Found Items</Link>
-            <Link to="/report">Report Item</Link>
+            {/* <Link to="/report">Report Item</Link> */}
+            <button
+  className="footer-link-btn"
+  onClick={() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      navigate("/report");
+    } else {
+      navigate("/register");
+    }
+  }}
+>
+  Report Item
+</button>
+          
           </div>
           <div className="footer-col">
             <h4>Account</h4>

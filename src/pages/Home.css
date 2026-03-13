@@ -8,6 +8,12 @@
   padding: 120px 0 80px;
 }
 
+.hero-card-preview-image img {
+  width: 200px;
+  height: 100px;
+  object-fit: contain;
+}
+
 .hero-bg {
   position: absolute;
   inset: 0;
