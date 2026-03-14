@@ -4,16 +4,16 @@ import './ItemCard.css';
 
 export const ItemCard = ({ item, featured = false }) => {
   const { id, type, title, category, location, date, description, user, reward, urgent } = item;
-
+  const username = user?.name || "User";
   return (
     <Link to={`/items/${id}`} className={`item-card ${featured ? 'item-card-featured' : ''}`}>
       {urgent && <div className="item-card-urgent-stripe" />}
       
       <div className="item-card-header">
         <div className="item-card-meta">
-          <span className={`badge badge-${type}`}>
+          <span className={`badge badge-${type?.toLowerCase()}`}>
             <span className="badge-dot" />
-            {type === 'lost' ? 'Lost' : 'Found'}
+            {type?.toUpperCase() === 'LOST' ? 'Lost' : 'Found'}
           </span>
           {reward && <span className="item-card-reward"> {reward} reward</span>}
         </div>
@@ -40,8 +40,8 @@ export const ItemCard = ({ item, featured = false }) => {
             {location}
           </div>
           <div className="item-card-user">
-            <div className="item-card-avatar">{user?.name?.[0] || '?'}</div>
-            <span>{user?.name}</span>
+            <div className="item-card-avatar">{username?.charAt(0).toUpperCase()}</div>
+            <span>{username}</span>
           </div>
         </div>
       </div>

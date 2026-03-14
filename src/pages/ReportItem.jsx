@@ -11,7 +11,7 @@ export const ReportItem = () => {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
-    title: '', category: '', location: '', date: '', description: '', reward: '', contact: '', phone: ''
+    title: '', category: '', location: '', address: '', date: '', description: '', reward: '', contact: '', phone: ''
   });
 
   const update = (field, value) => setForm(f => ({ ...f, [field]: value }));
@@ -20,6 +20,7 @@ export const ReportItem = () => {
     
     try {
     setLoading(true);
+    const user = JSON.parse(localStorage.getItem("user"));
 
     const itemData = {
       type: type.toUpperCase(),
@@ -30,7 +31,7 @@ export const ReportItem = () => {
       address: form.address,
       date: form.date,
       reward: form.reward || 0,
-      email: form.contact,
+      email: user?.email,
       phone: form.phone
     };
 
