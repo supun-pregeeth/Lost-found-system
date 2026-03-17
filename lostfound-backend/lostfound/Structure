@@ -1,0 +1,39 @@
+lost-found-backend
+│
+├── src/main/java/com/supun/lostfound
+│
+│   ├── config
+│   │   └── SecurityConfig.java
+│
+│   ├── controller
+│   │   ├── AuthController.java
+│   │   └── ItemController.java
+│
+│   ├── service
+│   │   ├── AuthService.java
+│   │   └── ItemService.java
+│
+│   ├── repository
+│   │   ├── UserRepository.java
+│   │   └── ItemRepository.java
+│
+│   ├── entity
+│   │   ├── User.java
+│   │   └── Item.java
+│
+│   ├── dto
+│   │   ├── LoginRequest.java
+│   │   ├── RegisterRequest.java
+│   │   └── ItemRequest.java
+│
+│   ├── security
+│   │   ├── JwtUtil.java
+│   │   └── JwtAuthenticationFilter.java
+│
+│   └── LostFoundApplication.java
+│
+├── src/main/resources
+│   ├── application.properties
+│   └── data.sql
+│
+└── pom.xml
