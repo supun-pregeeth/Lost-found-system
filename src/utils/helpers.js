@@ -1,12 +1,17 @@
+
+//convert a date like March 8, 2025
 export const formatDate = (dateStr) => {
+
   const date = new Date(dateStr);
   return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 };
 
+//timeAgo
 export const timeAgo = (dateStr) => {
+
   const now = new Date();
   const date = new Date(dateStr);
-  const diff = Math.floor((now - date) / 1000);
+  const diff = Math.floor((now - date) / 1000); // in seconds
   if (diff < 60) return 'just now';
   if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
   if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
@@ -14,6 +19,7 @@ export const timeAgo = (dateStr) => {
   return formatDate(dateStr);
 };
 
+//Cuts long text and adds ellipsis
 export const truncate = (str, max = 120) =>
   str?.length > max ? str.slice(0, max) + '…' : str;
 

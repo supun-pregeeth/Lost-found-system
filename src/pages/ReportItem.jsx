@@ -17,10 +17,8 @@ export const ReportItem = () => {
   const update = (field, value) => setForm(f => ({ ...f, [field]: value }));
 
   const handleSubmit = async () => {
-    
-    try {
+  try {
     setLoading(true);
-    const user = JSON.parse(localStorage.getItem("user"));
 
     const itemData = {
       type: type.toUpperCase(),
@@ -31,7 +29,7 @@ export const ReportItem = () => {
       address: form.address,
       date: form.date,
       reward: form.reward || 0,
-      email: user?.email,
+      email: form.contact, // ✅ use form email
       phone: form.phone
     };
 
@@ -46,7 +44,6 @@ export const ReportItem = () => {
   } finally {
     setLoading(false);
   }
-  
 };
 
   return (

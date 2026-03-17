@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import './Footer.css';
 
 export const Footer = () => {
+
   const navigate = useNavigate();
 
   return (
@@ -42,7 +43,7 @@ export const Footer = () => {
   Report Item
 </button>
           
-          </div>
+        </div>
           <div className="footer-col">
             <h4>Account</h4>
             <Link to="/login">Sign In</Link>

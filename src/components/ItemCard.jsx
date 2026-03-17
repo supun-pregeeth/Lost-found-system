@@ -3,10 +3,13 @@ import { getCategoryIcon, timeAgo, truncate } from '../utils/helpers';
 import './ItemCard.css';
 
 export const ItemCard = ({ item, featured = false }) => {
+
   const { id, type, title, category, location, date, description, user, reward, urgent } = item;
   const username = user?.name || "User";
   return (
+    //all card clickable, goes to item details page
     <Link to={`/items/${id}`} className={`item-card ${featured ? 'item-card-featured' : ''}`}>
+      
       {urgent && <div className="item-card-urgent-stripe" />}
       
       <div className="item-card-header">
