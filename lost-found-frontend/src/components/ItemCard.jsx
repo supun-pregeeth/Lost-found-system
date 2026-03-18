@@ -4,7 +4,7 @@ import './ItemCard.css';
 
 export const ItemCard = ({ item, featured = false }) => {
 
-  const { id, type, title, category, location, date, description, user, reward, urgent } = item;
+  const { id, type, title, category, location, image, date, description, user, reward, urgent } = item;
   const username = user?.name || "User";
   return (
     //all card clickable, goes to item details page
@@ -24,9 +24,15 @@ export const ItemCard = ({ item, featured = false }) => {
       </div>
 
       <div className="item-card-image-area">
-        <div className="item-card-image-placeholder">
+
+        {image ? (
+          <img src={image} alt={title} className="item-card-image" />
+        ):(
+          <div className="item-card-image-placeholder">
           <span className="item-card-category-icon">{getCategoryIcon(category)}</span>
         </div>
+        )}
+
         {urgent && <div className="item-card-urgent-badge">Urgent</div>}
       </div>
 
