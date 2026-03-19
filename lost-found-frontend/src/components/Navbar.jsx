@@ -5,14 +5,14 @@ import './Navbar.css';
 
 export const Navbar = () => {
 
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user, logout } = useAuth(); //it is for login and logout
+  const navigate = useNavigate(); //we can navigate as we wish
 
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  const dropdownRef = useRef(null);
+  const [scrolled, setScrolled] = useState(false); // when we scroll, change navbar
+  const [menuOpen, setMenuOpen] = useState(false); // To open/close menu on mobile (☰)
+  const [dropdownOpen, setDropdownOpen] = useState(false); // To show/hide user dropdown
+  
+  const dropdownRef = useRef(null); //To detect click outside dropdown
 
   /* Close dropdown if clicked outside */
   useEffect(() => {
@@ -75,9 +75,12 @@ export const Navbar = () => {
         {/* Navigation links */}
         <nav className={`navbar-nav ${menuOpen ? 'navbar-nav-open' : ''}`}>
 
+          {/* navlink knows which page is active */}
           <NavLink
+
+           /* When we click the page, it becomes active and CSS changes */
             to="/lost"
-            className={({isActive}) => `nav-link ${isActive ? 'nav-link-active' : ''}`}
+            className={({isActive}) => `nav-link ${isActive ? 'nav-link-active' : ''}`} //if true → you are on "/lost"
             onClick={() => setMenuOpen(false)}
           >
             Lost Items
@@ -94,6 +97,8 @@ export const Navbar = () => {
           <button
             className="nav-link nav-link-cta"
             onClick={() => {
+              setMenuOpen(false);
+
               const token = localStorage.getItem("token");
               if (token) {
                 navigate("/report");

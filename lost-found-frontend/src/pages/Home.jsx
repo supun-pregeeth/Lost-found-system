@@ -28,8 +28,9 @@ export const Home = () => {
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const recentItems = MOCK_ITEMS.slice(0, 3);
+
   const urgentItems = MOCK_ITEMS.filter(i => i.urgent).slice(0, 2);
+    const recentItems = MOCK_ITEMS.slice(3, 6);
 
   /* Search handler with login check */
   const handleSearch = (q) => {
