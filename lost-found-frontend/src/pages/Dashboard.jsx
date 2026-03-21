@@ -37,6 +37,7 @@ export const Dashboard = () => {
 //why we use this one - need to run code automatically when component loads, and also we need to fetch data from backend when component loads, so useEffect is the best place to do that. 
 //fetch data from backend
 useEffect(() => {
+  console.log("Fetching dashboard...");
   const fetchData = async () => {
     try {
       const [r, m, msg, s] = await Promise.all([ // run all 4 requests at the same time, and wait for all of them to finish
@@ -46,9 +47,9 @@ useEffect(() => {
         getStats(),
       ]);
 
-      setReports(r.data);
-      setMatches(m.data);
-      setMessages(msg.data);
+      setReports(r.data || []);
+      setMatches(m.data || []);
+      setMessages(msg.data || []);
       setStats([
   { label: "Reports", value: s.data.totalReports || 0 },
   { label: "Lost", value: s.data.lost || 0 },
@@ -57,6 +58,9 @@ useEffect(() => {
 
     } catch (err) {
       console.error(err);
+    }
+    finally {
+      setLoading(false); // ✅ ALWAYS runs
     }
   };
 
@@ -78,6 +82,7 @@ useEffect(() => {
     );
   }
 
+//matching logic - for demo purposes, we are just taking the matches from the backend and transforming them into the format we need for the UI. In a real app, this would be more complex and would involve some logic to determine which matches to show, how to calculate confidence, etc.
 const transformedMatches = matches.map(item => ({
   id: item.id,
   myItem: {
@@ -85,10 +90,11 @@ const transformedMatches = matches.map(item => ({
     type: "lost",
   },
   matchItem: item,
-  confidence: 80,
+  confidence: item.confidence || 80,
   isNew: true,
 }));
 
+//Keep only the matches-Remove matches that the user already clicked
 const visibleMatches = transformedMatches.filter(
   m => !dismissedMatches.includes(m.id)
 );
@@ -101,6 +107,16 @@ const filteredReports = reports.map(item => ({
 })).filter(r =>
   reportFilter === 'all' || r.type?.toLowerCase() === reportFilter
 );
+
+//regarding message
+const transformedMessages = messages.map(msg => ({
+  id: msg.id,
+  from: msg.senderEmail,
+  item: "Item",
+  preview: msg.content,
+  time: "now",
+  unread: msg.unread,
+}));
 
   return (
     <div className="page ds-page">
@@ -268,15 +284,9 @@ const filteredReports = reports.map(item => ({
                 <span className="ds-panel-sub">People reaching out about your items</span>
               </div>
               <div className="ds-msg-list">
-                const transformedMessages = messages.map(msg => ({
-  id: msg.id,
-  from: msg.senderEmail,
-  item: "Item",
-  preview: msg.content,
-  time: "now",
-  unread: msg.unread,
-}));
-
+                  {transformedMessages.map(m => (
+                    <div key={m.id}>{m.preview}</div>
+                    ))}
               </div>
             </div>
           )}

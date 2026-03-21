@@ -70,13 +70,13 @@ public class ItemService {
 
     //Get my report
     public List<Item> getMyItems(String email){
-        return itemRepository.findByUserEmail(email);
+        return itemRepository.findByUser_Email(email);
     }
 
     //match item
     public List<Item> getMatches(String email) {
 
-        List<Item> myItems = itemRepository.findByUserEmail(email);
+        List<Item> myItems = itemRepository.findByUser_Email(email);
         List<Item> allItems = itemRepository.findAll();
 
         List<Item> matches = new ArrayList<>();
@@ -134,7 +134,7 @@ public class ItemService {
     // add Stats
     public Map<String,Object> getStats(String email){
 
-        List<Item> items = itemRepository.findByUserEmail(email);
+        List<Item> items = itemRepository.findByUser_Email(email);
 
         long lost = items.stream().filter(i -> i.getType().equals("LOST")).count();
         long found = items.stream().filter(i -> i.getType().equals("FOUND")).count();
