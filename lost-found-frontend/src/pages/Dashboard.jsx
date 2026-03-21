@@ -1,47 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { MOCK_ITEMS, getCategoryIcon, formatDate, timeAgo } from '../utils/helpers';
 import { Button } from '../components/Button';
+import { getMyReports, getMatches, getMessages, getStats } from "../api/dashboardApi";
 import './Dashboard.css';
 
-/* ── Mock data scoped to "this user" ── */
-const MY_REPORTS = MOCK_ITEMS.slice(0, 4).map((item, i) => ({
-  ...item,
-  status: i === 0 ? 'matched' : i === 1 ? 'resolved' : 'active',
-  views: [24, 8, 41, 17][i],
-}));
-
-const MOCK_MATCHES = [
-  {
-    id: 'M1',
-    myItem:    { id: 1, title: 'Black Leather Wallet', type: 'lost' },
-    matchItem: { id: 2, title: 'Brown Wallet Found', type: 'found', location: 'Central Park West', date: '2025-03-09', user: { name: 'Sara M.' } },
-    confidence: 91,
-    isNew: true,
-  },
-  {
-    id: 'M2',
-    myItem:    { id: 5, title: 'MacBook Pro 14"', type: 'lost' },
-    matchItem: { id: 6, title: 'Silver Laptop Found', type: 'found', location: 'SoHo, near W Broadway', date: '2025-03-07', user: { name: 'Tom R.' } },
-    confidence: 74,
-    isNew: false,
-  },
-];
-
-const MOCK_MESSAGES = [
-  { id: 'C1', from: 'Sara M.', item: 'Black Leather Wallet', time: '2h ago', preview: 'Hi! I think I found your wallet near the fountain…', unread: true },
-  { id: 'C2', from: 'Omar S.', item: 'MacBook Pro 14"', time: '1d ago', preview: 'Could you describe any stickers on the lid?', unread: false },
-  { id: 'C3', from: 'Marco T.', item: 'Gold Ring', time: '3d ago', preview: 'The ring matches your description very closely.', unread: false },
-];
-
-const STATS = [
+/* const STATS = [
   { label: 'Active Reports', value: '3', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>, change: '+1 this week' },
   { label: 'Potential Matches', value: '2', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>, change: '1 new today', accent: true },
   { label: 'Messages', value: '1', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>, change: '1 unread', unread: true },
   { label: 'Items Resolved', value: '1', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><polyline points="20 6 9 17 4 12"/></svg>, change: 'All time', success: true },
 ];
-
+ */
 const STATUS_MAP = {
   active:   { label: 'Active',   cls: 'ds-status-active'   },
   matched:  { label: 'Matched',  cls: 'ds-status-matched'  },
@@ -49,13 +20,50 @@ const STATUS_MAP = {
 };
 
 export const Dashboard = () => {
+
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('reports');
   const [reportFilter, setReportFilter] = useState('all');
   const [dismissedMatches, setDismissedMatches] = useState([]);
 
-  if (!user) {
+  const [loading, setLoading] = useState(true);
+  const [reports, setReports] = useState([]);
+  const [matches, setMatches] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [stats, setStats] = useState([]);
+
+
+//why we use this one - need to run code automatically when component loads, and also we need to fetch data from backend when component loads, so useEffect is the best place to do that. 
+//fetch data from backend
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const [r, m, msg, s] = await Promise.all([ // run all 4 requests at the same time, and wait for all of them to finish
+        getMyReports(),
+        getMatches(),
+        getMessages(),
+        getStats(),
+      ]);
+
+      setReports(r.data);
+      setMatches(m.data);
+      setMessages(msg.data);
+      setStats([
+  { label: "Reports", value: s.data.totalReports || 0 },
+  { label: "Lost", value: s.data.lost || 0 },
+  { label: "Found", value: s.data.found || 0 },
+]);
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  fetchData();
+}, []); //[] run only once
+
+ if (!user) {
     return (
       <div className="page">
         <div className="container ds-gate">
@@ -70,16 +78,35 @@ export const Dashboard = () => {
     );
   }
 
-  const visibleMatches = MOCK_MATCHES.filter(m => !dismissedMatches.includes(m.id));
-  const filteredReports = MY_REPORTS.filter(r =>
-    reportFilter === 'all' ? true : r.type === reportFilter
-  );
+const transformedMatches = matches.map(item => ({
+  id: item.id,
+  myItem: {
+    title: "Your Item",
+    type: "lost",
+  },
+  matchItem: item,
+  confidence: 80,
+  isNew: true,
+}));
+
+const visibleMatches = transformedMatches.filter(
+  m => !dismissedMatches.includes(m.id)
+);
+  
+//report is like array. get all through map function.
+const filteredReports = reports.map(item => ({
+  ...item,
+  status: item.status || "active",
+  views: item.views || 0,
+})).filter(r =>
+  reportFilter === 'all' || r.type?.toLowerCase() === reportFilter
+);
 
   return (
     <div className="page ds-page">
 
       {/* ── Top bar ── */}
-      <div className="ds-topbar">
+      {/* <div className="ds-topbar">
         <div className="container ds-topbar-inner">
           <div className="ds-greeting">
             <div className="ds-avatar-lg">{user.name?.[0]?.toUpperCase()}</div>
@@ -89,12 +116,12 @@ export const Dashboard = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* ── Stats row ── */}
       <div className="ds-stats-band">
         <div className="container ds-stats-row">
-          {STATS.map(s => (
+          {stats.map(s => (
             <div key={s.label} className={`ds-stat ${s.accent ? 'ds-stat-accent' : ''} ${s.success ? 'ds-stat-success' : ''} ${s.unread ? 'ds-stat-unread' : ''}`}>
               <div className="ds-stat-icon">{s.icon}</div>
               <div className="ds-stat-body">
@@ -116,9 +143,9 @@ export const Dashboard = () => {
           {/* Tabs */}
           <div className="ds-tabs">
             {[
-              { id: 'reports',  label: 'My Reports',  badge: MY_REPORTS.length },
+              { id: 'reports',  label: 'My Reports',  badge: reports.length },
               { id: 'matches',  label: 'Matches',     badge: visibleMatches.filter(m => m.isNew).length, highlight: true },
-              { id: 'messages', label: 'Messages',    badge: MOCK_MESSAGES.filter(m => m.unread).length },
+              { id: 'messages', label: 'Messages',    badge: messages.filter(m => m.unread).length },
             ].map(t => (
               <button
                 key={t.id}
@@ -240,22 +267,16 @@ export const Dashboard = () => {
                 <p className="ds-panel-title">Contact requests</p>
                 <span className="ds-panel-sub">People reaching out about your items</span>
               </div>
-
               <div className="ds-msg-list">
-                {MOCK_MESSAGES.map(msg => (
-                  <div key={msg.id} className={`ds-msg-row ${msg.unread ? 'ds-msg-unread' : ''}`}>
-                    <div className="ds-msg-avatar">{msg.from[0]}</div>
-                    <div className="ds-msg-body">
-                      <div className="ds-msg-top">
-                        <span className="ds-msg-from">{msg.from}</span>
-                        <span className="ds-msg-time">{msg.time}</span>
-                      </div>
-                      <p className="ds-msg-item">Re: {msg.item}</p>
-                      <p className="ds-msg-preview">{msg.preview}</p>
-                    </div>
-                    {msg.unread && <span className="ds-msg-dot" />}
-                  </div>
-                ))}
+                const transformedMessages = messages.map(msg => ({
+  id: msg.id,
+  from: msg.senderEmail,
+  item: "Item",
+  preview: msg.content,
+  time: "now",
+  unread: msg.unread,
+}));
+
               </div>
             </div>
           )}

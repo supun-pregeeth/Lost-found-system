@@ -30,7 +30,7 @@ export const Home = () => {
   const token = localStorage.getItem("token");
 
   const urgentItems = MOCK_ITEMS.filter(i => i.urgent).slice(0, 2);
-    const recentItems = MOCK_ITEMS.slice(3, 6);
+  const recentItems = MOCK_ITEMS.slice(3, 6);
 
   /* Search handler with login check */
   const handleSearch = (q) => {
@@ -41,7 +41,8 @@ export const Home = () => {
 
   if (token) {
     navigate(`/lost?q=${q}`);
-  } else {
+  } 
+  else {
     navigate("/register");
   }
   };
@@ -170,7 +171,7 @@ export const Home = () => {
       </section>
 
 
-      {/* STATS BAR */}
+      {/* STATS BAR */}   
       <section className="stats-bar">
 
         <div className="container stats-inner">
@@ -187,7 +188,7 @@ export const Home = () => {
                 {stat.label}
               </div>
 
-            </div>
+            </div>   
 
           ))}
 

@@ -39,8 +39,6 @@ public class Item {
 
     private Double reward;
 
-    private String email;
-
     private String phone;
 
 }

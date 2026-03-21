@@ -2,8 +2,9 @@ package com.supun.lostfound.controller;
 
 import com.supun.lostfound.dto.ItemRequest;
 import com.supun.lostfound.entity.Item;
-import com.supun.lostfound.service.ItemService;
+import com.supun.lostfound.service.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,22 +17,22 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public Item createItem(@RequestBody ItemRequest request){
+    public Item createItem(@RequestBody ItemRequest request) {
         return itemService.createItem(request);
     }
 
     @GetMapping
-    public List<Item> getAllItems(){
+    public List<Item> getAllItems() {
         return itemService.getAllItems();
     }
 
     @GetMapping("/lost")
-    public List<Item> lostItems(){
+    public List<Item> lostItems() {
         return itemService.getLostItems();
     }
 
     @GetMapping("/found")
-    public List<Item> foundItems(){
+    public List<Item> foundItems() {
         return itemService.getFoundItems();
     }
 }

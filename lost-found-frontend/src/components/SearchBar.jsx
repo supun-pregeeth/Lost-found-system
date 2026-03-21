@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './SearchBar.css';
 
 export const SearchBar = ({ onSearch, placeholder = 'Search items...', value = '', large = false }) => {
+  
   const [query, setQuery] = useState(value);
 
   const handleSubmit = (e) => {

@@ -12,6 +12,7 @@ import { Dashboard } from '../pages/Dashboard';
 
 export const AppRoutes = () => (
   <Routes>
+    
     <Route path="/" element={<Home />} />
     <Route path="/lost" element={<LostItems />} />
     <Route path="/found" element={<FoundItems />} />

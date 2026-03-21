@@ -42,14 +42,6 @@ export const Navbar = () => {
 
   }, []);
 
-  /* Proper logout */
-  const handleLogout = () => {
-
-    localStorage.removeItem("token");   // remove JWT token
-    logout();                           // update auth context
-    navigate('/');                      // go back to homepage
-
-  };
 
   return (
 
@@ -123,9 +115,10 @@ export const Navbar = () => {
               {/* Avatar */}
               <div
                 className="navbar-user-avatar"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
+
+                onClick={() => setDropdownOpen(!dropdownOpen)} //first click → open dropdown, second click → close dropdown
               >
-                {user.name?.[0]}
+                {user.name?.[0]} {/* user is an oblect. user.name ="john" */}
               </div>
 
               {/* Dropdown */}
@@ -146,7 +139,13 @@ export const Navbar = () => {
 
                   <button
                     className="navbar-dropdown-logout"
-                    onClick={handleLogout}
+                    onClick={() => {
+
+                      localStorage.removeItem("token"); //remove token from local storage
+                      logout(); //update auth context
+                      navigate("/login"); //navigate to login page
+                    }
+                  }
                   >
                     Sign out
                   </button>
