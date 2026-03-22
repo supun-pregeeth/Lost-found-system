@@ -23,9 +23,11 @@ export const ItemDetails = () => {
 
       try {
 
-        const res = await getItems();
-
-        const foundItem = res.data.find(
+        //call item api
+        //await mean wait unitil async is finished, then continue.
+        const res = await getItems(); //(res = res.data)
+        console.log(res);
+        const foundItem = res.find(
           (i) => i.id == id
         );
 

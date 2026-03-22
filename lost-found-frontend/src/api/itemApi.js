@@ -4,7 +4,7 @@ const API = axios.create({
   baseURL: "http://localhost:8088"
 });
 
-// 🔥 ADD THIS INTERCEPTOR
+//ADD token every request api
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
 
@@ -21,5 +21,29 @@ export const createItem = (data) => {
 
 export const getItems = async () => {
   const res = await API.get("/api/items");
-  return res.data;
+  //res is like {
+  //data: [ ... ],        // 👈 YOUR ACTUAL DATA
+  //status: 200,
+  //statusText: "OK",
+  //headers: {},
+  //config: {}}
+
+  return res.data; // the json sent by backend
 };
+
+
+//explain config.
+
+/* API.post("/items", {
+  name: "Wallet",
+  category: "Accessories"
+});
+
+const config = {
+  method: "get",
+  url: "/api/items",
+  headers: {
+    Authorization: "Bearer token"
+  },
+  baseURL: "http://localhost:8080"
+}; */
