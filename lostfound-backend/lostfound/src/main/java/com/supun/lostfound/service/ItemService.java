@@ -87,14 +87,16 @@ public class ItemService {
 
             for (Item item : allItems) { //Item is class. item is one object.
 
+                if (item.getUser() == null) continue;
+
                 // ❌ Skip same user
                 if (item.getUser().getEmail().equals(email)) continue;
 
                 // ❌ Skip wrong type
-                if (!item.getType().equals(oppositeType)) continue;
+                if (item.getType() == null || !item.getType().equals(oppositeType)) continue;
 
                 // ❌ Skip different category
-                if (!item.getCategory().equalsIgnoreCase(myItem.getCategory())) continue;
+                if ((item.getCategory() == null || !item.getCategory().equalsIgnoreCase(myItem.getCategory()))) continue;
 
                 //Scoring system
                 int score = 0;

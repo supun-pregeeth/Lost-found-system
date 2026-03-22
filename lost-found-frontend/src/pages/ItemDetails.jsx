@@ -9,7 +9,7 @@ import "./ItemDetails.css";
 
 export const ItemDetails = () => {
 
-  const { id } = useParams();
+  const { id } = useParams(); //gets values from the URL based on your route definition
   const navigate = useNavigate();
 
   const [item, setItem] = useState(null);
@@ -25,17 +25,22 @@ export const ItemDetails = () => {
 
         //call item api
         //await mean wait unitil async is finished, then continue.
-        const res = await getItems(); //(res = res.data)
-        console.log(res);
-        const foundItem = res.find(
-          (i) => i.id == id
+        const data = await getItems(); //(all = res.data)
+        console.log("URL id:", id);
+        console.log("Data:", data);
+
+        //i = each item inside the array
+        //first loop - i = { id: 1, name: "Wallet" }
+        //i.id come from backend, id come from url
+        const foundItem = data.find(
+          (i) => String(i.id) === String(id)
         );
 
-        setItem(foundItem);
+        setItem(foundItem); //save item to state
 
         if (foundItem) {
 
-          const relatedItems = res.data
+          const relatedItems = data
             .filter(
               (i) =>
                 i.id !== foundItem.id &&
@@ -48,14 +53,14 @@ export const ItemDetails = () => {
 
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
-    loadItem();
+    loadItem();//call the function(Run now)
 
-  }, [id]
+  }, [id] //Run this effect when id changes
   );
 
   if (loading) {
