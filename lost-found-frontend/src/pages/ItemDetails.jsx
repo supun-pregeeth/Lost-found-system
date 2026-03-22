@@ -26,7 +26,7 @@ export const ItemDetails = () => {
         const res = await getItems();
 
         const foundItem = res.data.find(
-          (i) => i.id === Number(id)
+          (i) => i.id == id
         );
 
         setItem(foundItem);
@@ -53,7 +53,8 @@ export const ItemDetails = () => {
 
     loadItem();
 
-  }, [id]);
+  }, [id]
+  );
 
   if (loading) {
     return (

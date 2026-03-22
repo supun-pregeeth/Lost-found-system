@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { getCategoryIcon, timeAgo, truncate } from '../utils/helpers';
 import './ItemCard.css';
-
+//RuhP4nther
 export const ItemCard = ({ item, featured = false }) => {
 
   const { id, type, title, category, location, image, date, description, user, reward, urgent } = item;
@@ -50,7 +50,7 @@ export const ItemCard = ({ item, featured = false }) => {
           </div>
           <div className="item-card-user">
             <div className="item-card-avatar">{username?.charAt(0).toUpperCase()}</div>
-            <span>{username}</span>
+            {/* <span>{username}</span> */}
           </div>
         </div>
       </div>

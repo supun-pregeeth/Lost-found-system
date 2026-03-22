@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:8088', // Spring Boot port
+  baseURL: 'http://localhost:8088/api', // Spring Boot port
 });
 
 //add token
